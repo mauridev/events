@@ -1,5 +1,6 @@
-import { Component } from '@angular/core'
-
+import { Component, OnInit } from '@angular/core'
+import { EventService } from './shared/event.service'
+import { ToastrService } from '../common/toastr.service'
 
 
 @Component({
@@ -8,24 +9,30 @@ import { Component } from '@angular/core'
     <div>
         <h1>Próximos Eventos</h1>
         <hr />
-        <event-thumbnail #thumbnail [event]="event1"></event-thumbnail>
+        <div class="row">
+            <div *ngFor="let event of events"  class="col-md-5">
+                <event-thumbnail (click)="handleThumbnailClick(event.name)" [event]="event"></event-thumbnail>
+            </div>
+        </div>
     </div>
     `
 })
-export class EventListComponent {
-    event1 = {
-        id: 1,
-        name: 'Angular Connect',
-        date: '9/21/2019',
-        time: '10:00 am',
-        price: 399.99,
-        imageUrl: '/assets/images/golden-gate.jpg',
-        location: {
-            address: 'Cuareim 1080',
-            city: 'Montevideo',
-            country: 'Uruguay'
-        }   
-    }
+export class EventListComponent implements OnInit {
+  events
 
-    
+  constructor(private eventService: EventService, private toastr: ToastrService) {
+       
+  }
+
+  ngOnInit() {
+    this.events = this.eventService.getEvents()
+  }
+
+  handleThumbnailClick(eventName) {
+
+    this.toastr.success(eventName)
+  }
+  
+  
+
 }
